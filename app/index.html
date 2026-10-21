@@ -8,6 +8,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;900&family=Onest:wght@400;500;600;700&display=swap">
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113719232', 'ym');
+
+    ym(113719232, 'init', {ssr:true, webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params:{source:'vk_mini_app'}});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/113719232" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
 <style>
 /* Mini app: full-height step screens (intro ×3 → topic → time → details → review → sent), palette of the site */
 :root{
@@ -250,6 +263,8 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   if(bridge){ bridge.subscribe(function(e){ var d=e.detail||{}; if(d.type==='VKWebAppUpdateConfig'){ var s=(d.data&&(d.data.appearance||d.data.scheme))||''; document.documentElement.dataset.theme=/dark/.test(s)?'dark':'light'; } }); }
   send('VKWebAppGetUserInfo').then(function(u){ if(u&&u.first_name){ var n=document.getElementById('name'); if(!n.value){ n.value=u.first_name; validate(); } } }).catch(function(){});
 
+  var sent={}; function goal(n,once){ if(once&&sent[n]) return; sent[n]=1; try{ if(typeof window.ym==='function') window.ym(113719232,'reachGoal',n); }catch(_){} }
+  goal('app_open',true);
   // ---------- state
   var S={topic:null, days:[], hours:[], other:'', name:'', note:'', rules:false};
   var ORDER=['i0','i1','i2','topic','time','details','review','sent','sos'];
@@ -265,6 +280,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
     var d=dir||(ORDER.indexOf(to)>ORDER.indexOf(cur)?'l':'r'); if(to==='sos'||cur==='sos') d='f';
     b.classList.remove('in-l','in-r','in-f'); void b.offsetWidth; b.classList.add('in-'+d);
     cur=to; window.scrollTo(0,0);
+    if(to==='topic') goal('app_start',true); if(to==='time') goal('app_topic',true); if(to==='details') goal('app_time',true); if(to==='review') goal('app_details',true); if(to==='sos') goal('app_sos');
     if(to==='sent'){ var c=$('confetti'); c.style.animation='none'; void c.offsetWidth; c.style.animation='pop .7s cubic-bezier(.3,1.5,.5,1) both'; }
   }
   document.addEventListener('click',function(e){
@@ -371,11 +387,11 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   function toast(t){ var el=$('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(function(){el.hidden=true;},2600); }
   function copy(){ var t=text(); return send('VKWebAppCopyText',{text:t}).catch(function(){ return navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject(); }); }
   function openChat(){ var a=document.createElement('a'); a.href=CHAT_URL; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
-  $('send').onclick=function(){
+  $('send').onclick=function(){ goal('app_send');
     copy().catch(function(){}).then(function(){ return send('VKWebAppAllowMessagesFromGroup',{group_id:GROUP_ID}).catch(function(){}); })
       .then(function(){ toast('Текст скопирован – вставь его в чат'); openChat(); go('sent'); });
   };
-  $('copy-again').onclick=function(){ copy().then(function(){ toast('Скопировано'); openChat(); },function(){ toast('Не получилось скопировать'); }); };
+  $('copy-again').onclick=function(){ goal('app_copy_again'); copy().then(function(){ toast('Скопировано'); openChat(); },function(){ toast('Не получилось скопировать'); }); };
   validate();
 })();
 </script>
