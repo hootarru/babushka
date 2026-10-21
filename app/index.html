@@ -107,7 +107,30 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
 .bob{animation:bob 4s ease-in-out infinite}
 .wob{animation:wob 3.2s ease-in-out infinite}
 .ringing{animation:ring 2.6s ease-in-out infinite}
-@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* copied screen */
+.cp-stage{position:relative;height:230px;border-radius:32px;background:radial-gradient(60% 60% at 50% 50%, #FFF6D6 0%, #F9E27A 100%);overflow:hidden;flex:none}
+.cp-card{position:absolute;left:50%;top:22px;width:150px;padding:12px;border-radius:14px;background:#fff;box-shadow:0 12px 24px -14px var(--shadow);display:grid;gap:6px;transform:translateX(-50%)}
+.cp-card i{display:block;height:7px;border-radius:4px;background:#E7DCD5}.cp-card i:nth-child(1){width:70%;background:var(--orange)}.cp-card i:nth-child(3){width:85%}.cp-card i:nth-child(4){width:55%}
+.cp-clip{position:absolute;left:50%;bottom:26px;width:84px;height:84px;margin-left:-42px;border-radius:24px;background:#fff;display:grid;place-items:center;font-size:44px;box-shadow:0 12px 24px -14px var(--shadow)}
+.cp-check{position:absolute;left:50%;top:50%;width:96px;height:96px;margin:-62px 0 0 -48px;border-radius:50%;background:var(--ink-fixed);color:var(--sun);display:grid;place-items:center;font:700 52px var(--f-b);opacity:0}
+.cp-boom{position:absolute;left:50%;top:44%;width:0;height:0}
+.cp-boom i{position:absolute;width:11px;height:17px;border-radius:2px;opacity:0}
+#s-copied.go .cp-card{animation:fly .8s cubic-bezier(.5,0,.6,1) forwards}
+#s-copied.go .cp-clip{animation:gulp .5s .7s ease-out both, fadeout .3s 1.15s forwards}
+#s-copied.go .cp-check{animation:checkpop .55s 1.2s cubic-bezier(.3,1.6,.5,1) forwards}
+#s-copied.go .cp-boom i{animation:boom 1.1s 1.25s cubic-bezier(.15,.7,.3,1) forwards}
+#s-copied.go .cp-title,#s-copied.go .cp-steps{animation:rise .5s 1.35s ease-out both}
+@keyframes fly{0%{transform:translateX(-50%) scale(1);opacity:1}70%{transform:translateX(-50%) translateY(92px) scale(.45) rotate(-8deg);opacity:1}100%{transform:translateX(-50%) translateY(118px) scale(.2);opacity:0}}
+@keyframes gulp{0%{transform:scale(1)}40%{transform:scale(1.18) rotate(-6deg)}100%{transform:scale(1)}}
+@keyframes fadeout{to{opacity:0;transform:scale(.6)}}
+@keyframes checkpop{0%{opacity:0;transform:scale(.2) rotate(-40deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes boom{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot))}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.cp-steps .step .ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px}
+.kbd{display:inline-block;padding:1px 8px;border-radius:8px;background:var(--lilac);font-weight:700}
+.linkbtn{background:none;border:0;color:var(--muted);font:600 14px var(--f-b);text-decoration:underline;cursor:pointer;padding:6px;align-self:center}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.cp-card,.cp-clip,.cp-boom{display:none}.cp-check{opacity:1}}
 </style>
 </head>
 <body>
@@ -218,6 +241,25 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   <div class="foot"><button class="btn" type="button" id="send">Отправить в&nbsp;сообщения ↗</button></div>
 </section>
 
+<!-- 6b. copied -->
+<section class="screen" id="s-copied" hidden>
+  <div class="top"><button class="back" type="button" data-go="review">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="cp-stage" aria-hidden="true">
+    <div class="cp-card"><i></i><i></i><i></i><i></i></div>
+    <div class="cp-clip">📋</div>
+    <div class="cp-check">✓</div>
+    <div class="cp-boom" id="boom"></div>
+  </div>
+  <h1 class="cp-title">Ура! Текст заявки скопирован 🎉</h1>
+  <div class="card cp-steps">
+    <div class="step"><span class="ic" style="background:var(--sky)">💬</span><div><p style="font-weight:700">Сейчас откроется чат с&nbsp;сообществом</p><p class="muted" style="font-size:14px">«Бабушка на&nbsp;связи» во&nbsp;ВКонтакте</p></div></div>
+    <div class="step"><span class="ic" style="background:var(--pink)">👆</span><div><p style="font-weight:700">Нажми на&nbsp;поле сообщения и&nbsp;выбери <span class="kbd">Вставить</span></p><p class="muted" style="font-size:14px">на&nbsp;компьютере: Ctrl+V или ⌘+V</p></div></div>
+    <div class="step"><span class="ic" style="background:var(--lime)">➤</span><div><p style="font-weight:700">Нажми <span class="kbd">Отправить</span></p><p class="muted" style="font-size:14px">куратор ответит в&nbsp;течение дня</p></div></div>
+  </div>
+  <div class="foot"><button class="btn" type="button" id="open-chat">Понятно, открыть чат ↗</button>
+    <button class="linkbtn" type="button" id="copy-again2">Скопировать ещё раз</button></div>
+</section>
+
 <!-- 7. sent -->
 <section class="screen" id="s-sent" hidden>
   <div class="top"><span></span><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
@@ -227,7 +269,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
     <span class="stk ringing" style="right:20px;bottom:20px;background:var(--sun);--r:6deg">📞</span>
   </div>
   <h1>Заявка отправлена!</h1>
-  <p class="muted" id="sent-msg">Если чат не&nbsp;открылся или текст не&nbsp;вставился&nbsp;– нажми «Скопировать ещё раз».</p>
+  <p class="muted" id="sent-msg">Если ещё не&nbsp;отправила заявку в&nbsp;чат&nbsp;– нажми «Скопировать ещё раз», текст снова окажется в&nbsp;буфере.</p>
   <div class="card">
     <div class="step"><span class="num">1</span><div><p style="font-weight:700">Куратор подбирает бабушку</p><p class="muted" style="font-size:14px">обычно в&nbsp;течение дня</p></div></div>
     <div class="step"><span class="num">2</span><div><p style="font-weight:700">Подтверждаем время</p><p class="muted" style="font-size:14px">напишем тебе в&nbsp;сообщения</p></div></div>
@@ -267,7 +309,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   goal('app_open',true);
   // ---------- state
   var S={topic:null, days:[], hours:[], other:'', name:'', note:'', rules:false};
-  var ORDER=['i0','i1','i2','topic','time','details','review','sent','sos'];
+  var ORDER=['i0','i1','i2','topic','time','details','review','copied','sent','sos'];
   var cur='i0', beforeSos='i0';
 
   function $(id){return document.getElementById(id);}
@@ -281,6 +323,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
     b.classList.remove('in-l','in-r','in-f'); void b.offsetWidth; b.classList.add('in-'+d);
     cur=to; window.scrollTo(0,0);
     if(to==='topic') goal('app_start',true); if(to==='time') goal('app_topic',true); if(to==='details') goal('app_time',true); if(to==='review') goal('app_details',true); if(to==='sos') goal('app_sos');
+    if(to==='copied'){ b.classList.remove('go'); void b.offsetWidth; burst(); b.classList.add('go'); }
     if(to==='sent'){ var c=$('confetti'); c.style.animation='none'; void c.offsetWidth; c.style.animation='pop .7s cubic-bezier(.3,1.5,.5,1) both'; }
   }
   document.addEventListener('click',function(e){
@@ -389,8 +432,18 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   function openChat(){ var a=document.createElement('a'); a.href=CHAT_URL; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
   $('send').onclick=function(){ goal('app_send');
     copy().catch(function(){}).then(function(){ return send('VKWebAppAllowMessagesFromGroup',{group_id:GROUP_ID}).catch(function(){}); })
-      .then(function(){ toast('Текст скопирован – вставь его в чат'); openChat(); go('sent'); });
+      .then(function(){ go('copied'); });
   };
+  $('open-chat').onclick=function(){ goal('app_open_chat'); openChat(); setTimeout(function(){ go('sent','f'); },400); };
+  $('copy-again2').onclick=function(){ copy().then(function(){ toast('Скопировано ещё раз ✓'); },function(){ toast('Не получилось скопировать'); }); };
+  function burst(){
+    var box=$('boom'); box.innerHTML=''; var C=['#F07A28','#8E6CE0','#F2A3C7','#D9E36A','#BCD4EC','#3A1D1F','#fff'];
+    for(var i=0;i<64;i++){ var e=document.createElement("i"); var ang=Math.random()*Math.PI*2, r=90+Math.random()*150;
+      e.style.background=C[i%C.length]; e.style.setProperty('--dx',Math.cos(ang)*r+'px'); e.style.setProperty('--dy',(Math.sin(ang)*r*0.8-20)+'px'); e.style.setProperty('--rot',(Math.random()*720-360)+'deg');
+      e.style.animationDelay=(1.25+Math.random()*0.15)+'s'; if(i%3===0){e.style.width='8px';e.style.height='8px';e.style.borderRadius='50%';}
+      box.appendChild(e); }
+    try{ send('VKWebAppTapticNotificationOccurred',{type:'success'}).catch(function(){}); }catch(_){}
+  }
   $('copy-again').onclick=function(){ goal('app_copy_again'); copy().then(function(){ toast('Скопировано'); openChat(); },function(){ toast('Не получилось скопировать'); }); };
   validate();
 })();
