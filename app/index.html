@@ -7,154 +7,235 @@
 <link rel="icon" href="../favicon.ico" sizes="any">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;900&family=Onest:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;900&family=Onest:wght@400;500;600;700&display=swap">
 <style>
-/* Mini app: one column, step screens (start → topic → time → done), same palette as the site */
+/* Mini app: full-height step screens (intro ×3 → topic → time → details → review → sent), palette of the site */
 :root{
   --bg:#FBF6EE; --surface:#FFFFFF; --ink:#3A1D1F; --muted:#7D6662; --line:#EFE5E0;
-  --lilac:#EDE5FB; --violet:#8E6CE0; --orange:#F07A28; --pink:#F2A3C7; --lime:#D9E36A; --sky:#BCD4EC; --sun:#F9E27A; --maroon:#8C1D2F;
-  --ink-fixed:#3A1D1F; --on-dark:#FFFFFF; --danger-bg:#FCE6E0; --danger:#B4311A; --shadow:rgba(46,26,43,.3);
+  --lilac:#EDE5FB; --lilac2:#D9C8F7; --violet:#8E6CE0; --orange:#F07A28; --orange-soft:#F6CBA9; --pink:#F2A3C7; --pink2:#F7D6E6;
+  --lime:#D9E36A; --sky:#BCD4EC; --sun:#F9E27A; --peach:#F8E1D2; --maroon:#8C1D2F;
+  --ink-fixed:#3A1D1F; --danger-bg:#FCE6E0; --danger:#B4311A; --shadow:rgba(46,26,43,.28);
   --f-d:"Unbounded","Arial Black",system-ui,sans-serif; --f-b:"Onest","Helvetica Neue",Arial,system-ui,sans-serif;
 }
-:root[data-theme="dark"]{--bg:#17111A;--surface:#211A25;--ink:#F4ECF2;--muted:#B7A8B3;--line:#342A38;--lilac:#352A47;--danger-bg:#3D1F1A;--danger:#FF9A85;--shadow:rgba(0,0,0,.6);color-scheme:dark}
+:root[data-theme="dark"]{--bg:#17111A;--surface:#211A25;--ink:#F4ECF2;--muted:#B7A8B3;--line:#342A38;--lilac:#352A47;--danger-bg:#3D1F1A;--danger:#FF9A85;--shadow:rgba(0,0,0,.6);--orange-soft:#5A3A28;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 [hidden]{display:none!important}
-html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--f-b)}
-body{padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(16px,env(safe-area-inset-left,0px));min-height:100vh}
-.wrap{max-width:520px;margin:0 auto;display:grid;gap:16px}
-h1,h2{font-family:var(--f-d);font-weight:600;margin:0;line-height:1.02;text-transform:uppercase;text-wrap:balance}
-h1{font-size:clamp(34px,10vw,46px);font-weight:900}
-h1 span{display:block;color:var(--orange)}
-h2{font-size:24px}
-p{margin:0}
-.muted{color:var(--muted)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:20px;display:grid;gap:14px}
-.hero{position:relative;overflow:hidden;text-align:center;padding:28px 18px 24px;justify-items:center}
-.hero .sticker{position:absolute;font-size:30px;width:52px;height:52px;border-radius:16px;display:grid;place-items:center}
-.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;font:700 16px var(--f-b);padding:16px 20px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;color:var(--ink-fixed);background:var(--orange)}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 var(--f-b);overflow-x:hidden}
+.screen{min-height:100%;max-width:520px;margin:0 auto;display:flex;flex-direction:column;gap:16px;
+  padding:calc(env(safe-area-inset-top,0px) + 16px) max(20px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(20px,env(safe-area-inset-left,0px));touch-action:pan-y}
+.screen.in-l{animation:inL .32s ease-out}.screen.in-r{animation:inR .32s ease-out}.screen.in-f{animation:inF .25s ease-out}
+@keyframes inL{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}}
+@keyframes inR{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+@keyframes inF{from{opacity:0}to{opacity:1}}
+h1,h2{font-family:var(--f-d);font-weight:600;margin:0;line-height:1.05;text-transform:uppercase;letter-spacing:-.3px;text-wrap:balance}
+h1{font-size:clamp(26px,7.8vw,32px)}h2{font-size:clamp(21px,6.2vw,25px)}
+p{margin:0}.muted{color:var(--muted)}
+.top{display:flex;align-items:center;justify-content:space-between;min-height:36px}
+.back{background:none;border:0;padding:6px 0;color:var(--muted);font:500 15px var(--f-b);cursor:pointer}
+.sos{background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:6px 12px;font:700 13px var(--f-b);cursor:pointer}
+.bar{display:flex;gap:6px}.bar i{flex:1;height:5px;border-radius:3px;background:var(--line);transition:background .3s}.bar i.on{background:var(--orange)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:56px;border-radius:999px;border:0;background:var(--orange);color:var(--ink-fixed);font:700 16px var(--f-b);cursor:pointer;text-decoration:none;transition:transform .12s,background .2s}
+.btn:active{transform:scale(.98)}.btn:disabled{background:var(--orange-soft);cursor:not-allowed}
 .btn.ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--ink)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn:active{transform:scale(.98)}
-.steps{display:flex;gap:6px}
-.steps i{flex:1;height:5px;border-radius:3px;background:var(--line)}
-.steps i.on{background:var(--orange)}
-.back{background:none;border:0;color:var(--muted);font:500 15px var(--f-b);padding:6px 0;cursor:pointer;justify-self:start}
-.topics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.topic{position:relative;border:0;border-radius:22px;padding:16px 14px;text-align:left;cursor:pointer;display:grid;gap:6px;min-height:118px;align-content:start;color:var(--ink-fixed);font:inherit;transition:transform .15s,box-shadow .15s}
-.topic .e{font-size:30px;line-height:1}
-.topic b{font:600 clamp(11px,3.6vw,14px)/1.1 var(--f-d);text-transform:uppercase;overflow-wrap:anywhere}
-.topic small{font-size:12.5px;line-height:1.3;opacity:.8}
-.topic[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink);transform:rotate(-1.5deg) scale(1.02)}
-.topic[aria-pressed="true"]::after{content:"✓";position:absolute;top:10px;right:12px;width:26px;height:26px;border-radius:50%;background:var(--ink-fixed);color:var(--sun);display:grid;place-items:center;font-weight:700;font-size:14px}
+.foot{margin-top:auto;display:flex;flex-direction:column;gap:10px;padding-top:8px}
+.dots{display:flex;gap:8px;justify-content:center}.dots i{width:8px;height:8px;border-radius:4px;background:#E3D7D0;transition:width .3s,background .3s}.dots i.on{width:24px;background:var(--ink)}
+.ill{position:relative;height:clamp(240px,36vh,300px);border-radius:32px;flex:none}
+.stk{position:absolute;width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:34px;box-shadow:0 10px 22px -16px var(--shadow)}
+.pix{image-rendering:pixelated;image-rendering:crisp-edges;display:block;max-width:100%}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.note{background:var(--lilac);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.4}
+.pill{align-self:flex-start;font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px;background:var(--pink2);color:var(--ink-fixed)}
+.step{display:flex;gap:12px;align-items:flex-start}
+.num{flex:none;width:30px;height:30px;border-radius:15px;background:var(--ink-fixed);color:var(--sun);display:grid;place-items:center;font:600 13px var(--f-d)}
+/* topics */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tc{position:relative;border:3px solid transparent;border-radius:22px;padding:12px 13px;min-height:112px;display:flex;flex-direction:column;gap:4px;text-align:left;cursor:pointer;color:var(--ink-fixed);font:inherit;transition:transform .15s}
+.tc:active{transform:scale(.97)}
+.tc .e{font-size:28px;line-height:1;display:inline-block;align-self:flex-start}
+.tc b{font:600 clamp(11px,3.4vw,13px)/1.1 var(--f-d);text-transform:uppercase;overflow-wrap:anywhere}
+.tc small{font-size:12px;line-height:1.3}
+.tc[aria-pressed="true"]{border-color:var(--ink-fixed)}
+.tc[aria-pressed="true"]::after{content:"✓";position:absolute;right:10px;top:10px;width:26px;height:26px;border-radius:13px;background:var(--ink-fixed);color:var(--sun);display:grid;place-items:center;font-weight:700;font-size:14px}
+/* time */
+.lbl{font-weight:700;font-size:15px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:10px 15px;font:500 15px var(--f-b);cursor:pointer}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-label.lbl{font-weight:700;font-size:15px}
-input[type=text],textarea{width:100%;font:16px var(--f-b);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px}
-textarea{min-height:90px;resize:vertical}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:9px 13px;font:500 14px var(--f-b);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+.slots{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.slot{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;height:42px;font:500 15px var(--f-b);cursor:pointer}
+.slot[aria-pressed="true"]{background:var(--violet);border-color:var(--violet);color:#fff}
+.slot:disabled{opacity:.35;cursor:not-allowed}
+.datebox{display:flex;gap:10px;align-items:center}
+input[type=date],input[type=text],textarea{width:100%;font:16px var(--f-b);color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:12px 14px}
+textarea{min-height:100px;resize:vertical}
 input:focus,textarea:focus{outline:none;border-color:var(--violet)}
-.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted)}
-.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--orange);flex:none}
-pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;font:14px/1.5 var(--f-b);margin:0}
-.done-ic{font-size:56px;line-height:1}
-.crisis{background:var(--danger-bg);border-radius:20px;padding:18px;display:grid;gap:8px}
-.crisis b{color:var(--danger)}
-.phone{font:700 22px var(--f-d);user-select:all}
-.help{justify-self:center;background:none;border:0;color:var(--muted);font:600 14px var(--f-b);text-decoration:underline;cursor:pointer;padding:8px}
-.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:500;z-index:9}
-.safe{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:14px;color:var(--muted);text-align:left}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.summary{text-align:center;font-size:14px;color:var(--muted);min-height:20px}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted);line-height:1.4}
+.check input{width:22px;height:22px;margin:0;accent-color:var(--orange);flex:none}
+.err{color:var(--danger);font-size:14px}
+/* review */
+.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.row .k{font-size:13px;color:var(--muted)}.row .v{font-size:15px;font-weight:600;overflow-wrap:anywhere}
+.ed{background:none;border:0;padding:2px 0;color:var(--violet);font:700 13px var(--f-b);cursor:pointer;flex:none}
+.sep{height:1px;background:var(--line)}
+.crisis{background:var(--danger-bg);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:10px}
+.phone-n{font:700 26px var(--f-d);user-select:all}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:500;z-index:9;white-space:nowrap}
+/* ---- life: small animations ---- */
+@keyframes bob{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-6px) rotate(var(--r,0deg))}}
+@keyframes wob{0%,100%{transform:rotate(-6deg) scale(1)}50%{transform:rotate(6deg) scale(1.06)}}
+@keyframes ring{0%,62%,100%{transform:rotate(var(--r,0deg))}66%,74%,82%{transform:rotate(calc(var(--r,0deg) - 14deg))}70%,78%{transform:rotate(calc(var(--r,0deg) + 14deg))}}
+@keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+@keyframes drift{0%,100%{transform:translate(-50%,-50%) translateX(-8px)}50%{transform:translate(-50%,-50%) translateX(8px)}}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.2) rotate(-30deg);opacity:0}60%{transform:translate(-50%,-50%) scale(1.15) rotate(8deg);opacity:1}100%{transform:translate(-50%,-50%) scale(1) rotate(0)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+.bob{animation:bob 4s ease-in-out infinite}
+.wob{animation:wob 3.2s ease-in-out infinite}
+.ringing{animation:ring 2.6s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <!-- 0. start -->
-  <section id="s0" class="screen">
-    <div class="card hero">
-      <span class="sticker" style="left:12px;top:14px;background:#F8E1D2;transform:rotate(-8deg)">👵</span>
-      <span class="sticker" style="right:12px;top:14px;background:var(--sun);transform:rotate(7deg)">📞</span>
-      <p class="muted" id="hello" style="margin-top:44px">Привет!</p>
-      <h1>Бабушка<span>на&nbsp;связи</span></h1>
-      <p>Поговори с&nbsp;тем, кто выслушает без&nbsp;оценок. Ей&nbsp;тоже было&nbsp;18.</p>
-      <div class="safe">
-        <span>🎧</span><span>Только аудио, 15–40 минут</span>
-        <span>🔒</span><span>Номера телефонов никто не&nbsp;видит</span>
-        <span>🧑‍💼</span><span>Куратор подберёт бабушку под&nbsp;твою тему</span>
-      </div>
-    </div>
-    <div style="display:grid;gap:10px;margin-top:16px">
-      <button class="btn" type="button" data-go="1">Оставить заявку</button>
-      <a class="btn ghost" href="https://babushka.online" target="_blank" rel="noopener">Подробнее о&nbsp;проекте</a>
-    </div>
-  </section>
+<!-- 0. intro 1 -->
+<section class="screen" id="s-i0" data-swipe-next="i1">
+  <div class="top"><span></span><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="ill" style="background:var(--sky)">
+    <img class="pix" src="img/cloud.png" alt="" style="position:absolute;left:50%;top:50%;width:min(56%,190px);transform:translate(-50%,-50%);animation:drift 5s ease-in-out infinite">
+    <span class="stk bob" style="left:16px;top:16px;background:#fff;--r:-6deg">📚</span>
+    <span class="stk bob" style="right:16px;top:36px;background:var(--pink);--r:7deg;animation-delay:-1s">💔</span>
+    <span class="stk bob" style="left:28px;bottom:20px;background:var(--sun);--r:5deg;animation-delay:-2s">🧳</span>
+    <span class="stk bob" style="right:24px;bottom:18px;background:var(--lime);--r:-5deg;animation-delay:-3s">💼</span>
+  </div>
+  <h1>Бывает, что всё навалилось</h1>
+  <p>Сессия, ссора с&nbsp;родителями, новый город или выбор, который никак не&nbsp;сделать. Друзей грузить не&nbsp;хочется, к&nbsp;психологу&nbsp;– слишком серьёзно. А&nbsp;поговорить очень хочется.</p>
+  <div class="foot"><div class="dots"><i class="on"></i><i></i><i></i></div>
+    <button class="btn" type="button" data-go="i1">Дальше</button>
+    <button class="btn ghost" type="button" data-go="topic">Пропустить</button></div>
+</section>
 
-  <!-- 1. topic -->
-  <section id="s1" class="screen" hidden>
-    <div style="display:grid;gap:14px">
-      <div class="steps"><i class="on"></i><i></i><i></i></div>
-      <button class="back" type="button" data-go="0">← Назад</button>
-      <h2>О&nbsp;чём хочется поговорить?</h2>
-      <div class="topics" id="topics"></div>
-      <button class="btn" type="button" id="to2" data-go="2" disabled>Дальше</button>
-    </div>
-  </section>
+<!-- 1. intro 2 -->
+<section class="screen" id="s-i1" hidden data-swipe-next="i2" data-swipe-prev="i0">
+  <div class="top"><button class="back" type="button" data-go="i0">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="ill" style="background:var(--peach);overflow:visible">
+    <span class="stk bob" style="left:16px;top:22px;background:var(--lilac2);--r:-6deg">☕</span>
+    <span class="stk bob" style="left:62px;top:110px;background:var(--sun);--r:6deg;animation-delay:-1.5s">🧶</span>
+    <span class="stk bob" style="left:22px;bottom:22px;background:#fff;--r:-4deg;animation-delay:-2.5s">💬</span>
+    <img class="pix" src="img/granny.png" alt="" style="position:absolute;right:18px;top:8px;height:calc(100% + 110px);width:auto;transform-origin:50% 100%;animation:sway 4.5s ease-in-out infinite">
+  </div>
+  <h1 style="max-width:58%">Есть бабушки, которые выслушают</h1>
+  <p>Без оценок, нотаций и&nbsp;«а&nbsp;вот в&nbsp;наше время». В&nbsp;18 им&nbsp;тоже было непросто&nbsp;– и&nbsp;они расскажут, как справлялись сами.</p>
+  <div class="foot"><div class="dots"><i></i><i class="on"></i><i></i></div>
+    <button class="btn" type="button" data-go="i2">Дальше</button>
+    <button class="btn ghost" type="button" data-go="topic">Пропустить</button></div>
+</section>
 
-  <!-- 2. time + details -->
-  <section id="s2" class="screen" hidden>
-    <div style="display:grid;gap:14px">
-      <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
-      <button class="back" type="button" data-go="1">← Назад</button>
-      <h2>Почти готово</h2>
-      <div class="card">
-        <label class="lbl" for="name">Как к&nbsp;тебе обращаться</label>
-        <input type="text" id="name" maxlength="40" placeholder="Например, Аня" autocomplete="given-name">
-        <span class="lbl">Когда удобно</span>
-        <div class="chips" id="times">
-          <button class="chip" type="button" aria-pressed="false" data-v="будни днём">Будни днём</button>
-          <button class="chip" type="button" aria-pressed="false" data-v="будни вечером">Будни вечером</button>
-          <button class="chip" type="button" aria-pressed="false" data-v="выходные">Выходные</button>
-        </div>
-        <label class="lbl" for="note">Пара слов о&nbsp;запросе <span class="muted" style="font-weight:400">(по&nbsp;желанию)</span></label>
-        <textarea id="note" maxlength="400" placeholder="Например: переехала в Москву, хочется поговорить с кем-то спокойным"></textarea>
-        <label class="check"><input type="checkbox" id="rules"><span>Мне есть 18&nbsp;лет, я&nbsp;соглашаюсь с&nbsp;правилами (без денег, контактов и&nbsp;встреч) и&nbsp;на&nbsp;обработку персональных данных.</span></label>
-      </div>
-      <p class="muted" id="err" hidden style="color:var(--danger)"></p>
-      <button class="btn" type="button" id="submit">Собрать заявку</button>
-    </div>
-  </section>
+<!-- 2. intro 3 -->
+<section class="screen" id="s-i2" hidden data-swipe-next="topic" data-swipe-prev="i1">
+  <div class="top"><button class="back" type="button" data-go="i1">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <span class="pill">как это работает</span>
+  <h1>Тема → время → звонок</h1>
+  <div class="card">
+    <div class="step"><span class="num">1</span><div><p style="font-weight:700">Выбираешь тему</p><p class="muted" style="font-size:14px">учёба, отношения, семья или просто поболтать</p></div></div>
+    <div class="step"><span class="num">2</span><div><p style="font-weight:700">Отмечаешь удобное время</p><p class="muted" style="font-size:14px">можно несколько вариантов</p></div></div>
+    <div class="step"><span class="num">3</span><div><p style="font-weight:700">Куратор подбирает бабушку</p><p class="muted" style="font-size:14px">и&nbsp;подтверждает время в&nbsp;сообщениях</p></div></div>
+    <div class="step"><span class="num">4</span><div><p style="font-weight:700">Созваниваетесь во&nbsp;ВКонтакте <span class="ringing" style="display:inline-block">📞</span></p><p class="muted" style="font-size:14px">только аудио, 15–40 минут, номера скрыты</p></div></div>
+  </div>
+  <div class="note">🔒 Бесплатно. Бабушки прошли инструктаж, куратор всегда на&nbsp;связи.</div>
+  <div class="foot"><div class="dots"><i></i><i></i><i class="on"></i></div>
+    <button class="btn" type="button" data-go="topic">Хочу поговорить</button></div>
+</section>
 
-  <!-- 3. done -->
-  <section id="s3" class="screen" hidden>
-    <div style="display:grid;gap:14px">
-      <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
-      <div class="card" style="text-align:center;justify-items:center">
-        <span class="done-ic">🎉</span>
-        <h2>Заявка готова</h2>
-        <p class="muted" id="done-msg">Отправь её нам в&nbsp;сообщения сообщества – куратор подберёт бабушку и&nbsp;напишет тебе.</p>
-      </div>
-      <pre id="text"></pre>
-      <button class="btn" type="button" id="send">Отправить в&nbsp;сообщения ↗</button>
-      <button class="btn ghost" type="button" id="copy">Скопировать текст</button>
-      <button class="back" type="button" data-go="2" style="justify-self:center">Изменить заявку</button>
-    </div>
-  </section>
+<!-- 3. topic -->
+<section class="screen" id="s-topic" hidden data-swipe-next="time" data-swipe-prev="i2">
+  <div class="top"><button class="back" type="button" data-go="i2">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="bar"><i class="on"></i><i></i><i></i><i></i></div>
+  <h2>О&nbsp;чём хочется поговорить?</h2>
+  <div class="grid" id="topics"></div>
+  <div class="foot"><button class="btn" type="button" id="next-topic" data-go="time" disabled>Дальше</button></div>
+</section>
 
-  <!-- crisis -->
-  <section id="s9" class="screen" hidden>
-    <div style="display:grid;gap:14px">
-      <button class="back" type="button" data-go="0">← На&nbsp;главную</button>
-      <div class="crisis">
-        <b>Похоже, тебе сейчас очень тяжело.</b>
-        <p>Мы не&nbsp;кризисная линия и&nbsp;не&nbsp;хотим, чтобы ты оставался с&nbsp;этим один. Позвони туда, где помогают профессионалы, – бесплатно и&nbsp;круглосуточно:</p>
-        <p><span class="phone">051</span> – психологическая помощь в&nbsp;Москве (с&nbsp;мобильного: <span class="phone" style="font-size:18px">+7&nbsp;495&nbsp;051</span>)</p>
-        <p><span class="phone">112</span> – экстренная помощь</p>
-      </div>
-    </div>
-  </section>
+<!-- 4. time -->
+<section class="screen" id="s-time" hidden data-swipe-next="details" data-swipe-prev="topic">
+  <div class="top"><button class="back" type="button" data-go="topic">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="bar"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+  <h2>Когда тебе удобно?</h2>
+  <span class="lbl">День</span>
+  <div class="chips" id="days"></div>
+  <div class="datebox" id="datebox" hidden><input type="date" id="other-date" aria-label="Другая дата"></div>
+  <span class="lbl">Время (по&nbsp;Москве)</span>
+  <div class="slots" id="slots"></div>
+  <div class="note">Можно выбрать несколько вариантов&nbsp;– так быстрее найдём бабушку. Куратор подтвердит время в&nbsp;сообщениях.</div>
+  <div class="foot"><p class="summary" id="summary"></p><button class="btn" type="button" id="next-time" data-go="details" disabled>Дальше</button></div>
+</section>
 
-  <button class="help" type="button" id="help">🆘 Мне тяжело</button>
-</div>
+<!-- 5. details -->
+<section class="screen" id="s-details" hidden data-swipe-next="review" data-swipe-prev="time">
+  <div class="top"><button class="back" type="button" data-go="time">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+  <h2>Пара слов о&nbsp;себе</h2>
+  <label class="lbl" for="name">Как к&nbsp;тебе обращаться</label>
+  <input type="text" id="name" maxlength="40" placeholder="Например, Аня" autocomplete="given-name">
+  <label class="lbl" for="note">О&nbsp;чём хочется поговорить <span class="muted" style="font-weight:400">(по&nbsp;желанию)</span></label>
+  <textarea id="note" maxlength="400" placeholder="Например: переехала в Москву, учёба не идёт, хочется поговорить с кем-то спокойным"></textarea>
+  <label class="check"><input type="checkbox" id="rules"><span>Мне есть 18&nbsp;лет, я&nbsp;соглашаюсь с&nbsp;правилами (без денег, контактов и&nbsp;встреч) и&nbsp;на&nbsp;обработку персональных данных</span></label>
+  <div class="ill" style="background:var(--orange);height:150px;overflow:hidden">
+    <img class="pix bob" src="img/computer.png" alt="" style="position:absolute;left:12%;bottom:-6px;width:120px;--r:6deg">
+    <img class="pix ringing" src="img/nokia.png" alt="" style="position:absolute;right:12%;top:8px;width:84px;transform-origin:50% 80%">
+  </div>
+  <div class="foot"><button class="btn" type="button" id="next-details" data-go="review" disabled>Дальше</button></div>
+</section>
+
+<!-- 6. review -->
+<section class="screen" id="s-review" hidden data-swipe-prev="details">
+  <div class="top"><button class="back" type="button" data-go="details">← Назад</button><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+  <h2>Всё верно?</h2>
+  <div class="card">
+    <div class="row"><div><p class="k">Тема</p><p class="v" id="r-topic"></p></div><button class="ed" type="button" data-go="topic">Изменить</button></div>
+    <div class="sep"></div>
+    <div class="row"><div><p class="k">Время</p><p class="v" id="r-time"></p></div><button class="ed" type="button" data-go="time">Изменить</button></div>
+    <div class="sep"></div>
+    <div class="row"><div><p class="k">Имя</p><p class="v" id="r-name"></p></div><button class="ed" type="button" data-go="details">Изменить</button></div>
+    <div id="r-note-wrap"><div class="sep" style="margin-bottom:12px"></div><div class="row"><div><p class="k">О&nbsp;запросе</p><p class="v" id="r-note"></p></div><button class="ed" type="button" data-go="details">Изменить</button></div></div>
+  </div>
+  <div class="note">💬 Мы скопируем текст заявки и&nbsp;откроем чат с&nbsp;сообществом&nbsp;– останется вставить и&nbsp;отправить.</div>
+  <div class="foot"><button class="btn" type="button" id="send">Отправить в&nbsp;сообщения ↗</button></div>
+</section>
+
+<!-- 7. sent -->
+<section class="screen" id="s-sent" hidden>
+  <div class="top"><span></span><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
+  <div class="ill" style="background:var(--lime);height:200px">
+    <img class="pix" id="confetti" src="img/confetti.png" alt="" style="position:absolute;left:50%;top:50%;width:120px;transform:translate(-50%,-50%)">
+    <span class="stk bob" style="left:18px;top:18px;background:#fff;--r:-6deg">👵</span>
+    <span class="stk ringing" style="right:20px;bottom:20px;background:var(--sun);--r:6deg">📞</span>
+  </div>
+  <h1>Заявка отправлена!</h1>
+  <p class="muted" id="sent-msg">Если чат не&nbsp;открылся или текст не&nbsp;вставился&nbsp;– нажми «Скопировать ещё раз».</p>
+  <div class="card">
+    <div class="step"><span class="num">1</span><div><p style="font-weight:700">Куратор подбирает бабушку</p><p class="muted" style="font-size:14px">обычно в&nbsp;течение дня</p></div></div>
+    <div class="step"><span class="num">2</span><div><p style="font-weight:700">Подтверждаем время</p><p class="muted" style="font-size:14px">напишем тебе в&nbsp;сообщения</p></div></div>
+    <div class="step"><span class="num">3</span><div><p style="font-weight:700">Звонок во&nbsp;ВКонтакте</p><p class="muted" style="font-size:14px">в&nbsp;назначенное время, только аудио</p></div></div>
+  </div>
+  <div class="foot"><button class="btn ghost" type="button" id="copy-again">Скопировать ещё раз</button>
+    <a class="btn" id="to-group" href="https://vk.com/club242075919" target="_blank" rel="noopener">Вернуться в&nbsp;сообщество</a></div>
+</section>
+
+<!-- 8. crisis -->
+<section class="screen" id="s-sos" hidden>
+  <div class="top"><button class="back" type="button" id="sos-back">← Назад</button><span></span></div>
+  <h1>Тебе сейчас очень тяжело?</h1>
+  <div class="crisis">
+    <p style="font-weight:700;color:var(--danger)">Мы рядом, но&nbsp;мы не&nbsp;кризисная линия.</p>
+    <p>Если очень плохо, позвони туда, где помогают профессионалы,&nbsp;– бесплатно и&nbsp;круглосуточно:</p>
+    <div><p class="phone-n">051</p><p>психологическая помощь в&nbsp;Москве</p><p class="muted" style="font-size:14px">с&nbsp;мобильного: +7&nbsp;495&nbsp;051</p></div>
+    <div><p class="phone-n">112</p><p>экстренная помощь</p></div>
+  </div>
+  <p class="muted">Когда станет полегче, мы будем рады поговорить. Бабушки никуда не&nbsp;денутся 🤍</p>
+  <div class="foot"><button class="btn ghost" type="button" id="sos-back2">Вернуться</button></div>
+</section>
+
 <div class="toast" id="toast" hidden></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@vkontakte/vk-bridge@2.15.0/dist/browser.min.js"></script>
@@ -162,58 +243,138 @@ pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px s
 (function(){
   var GROUP_ID=242075919, CHAT_URL='https://vk.com/im?sel=-'+GROUP_ID;
   var bridge=window.vkBridge||null;
-  function send(method,params){ if(!bridge) return Promise.reject(new Error('no bridge')); return bridge.send(method,params||{}); }
-
-  // init + theme + name
+  function send(m,p){ if(!bridge) return Promise.reject(new Error('no bridge')); return bridge.send(m,p||{}); }
   send('VKWebAppInit').catch(function(){});
-  if(bridge){ bridge.subscribe(function(e){ var d=e.detail||{}; if(d.type==='VKWebAppUpdateConfig'){ var dark=/dark/.test(d.data.appearance||d.data.scheme||''); document.documentElement.dataset.theme=dark?'dark':'light'; } }); }
-  send('VKWebAppGetUserInfo').then(function(u){ if(u&&u.first_name){ document.getElementById('hello').textContent='Привет, '+u.first_name+'!'; var n=document.getElementById('name'); if(!n.value) n.value=u.first_name; } }).catch(function(){});
+  if(bridge){ bridge.subscribe(function(e){ var d=e.detail||{}; if(d.type==='VKWebAppUpdateConfig'){ var s=(d.data&&(d.data.appearance||d.data.scheme))||''; document.documentElement.dataset.theme=/dark/.test(s)?'dark':'light'; } }); }
+  send('VKWebAppGetUserInfo').then(function(u){ if(u&&u.first_name){ var n=document.getElementById('name'); if(!n.value){ n.value=u.first_name; validate(); } } }).catch(function(){});
 
-  // screens
-  function go(n){ [].forEach.call(document.querySelectorAll('.screen'),function(s){ s.hidden=s.id!=='s'+n; }); window.scrollTo(0,0); }
-  document.addEventListener('click',function(e){ var b=e.target.closest('[data-go]'); if(b&&!b.disabled) go(b.dataset.go); });
-  document.getElementById('help').addEventListener('click',function(){ go(9); });
+  // ---------- state
+  var S={topic:null, days:[], hours:[], other:'', name:'', note:'', rules:false};
+  var ORDER=['i0','i1','i2','topic','time','details','review','sent','sos'];
+  var cur='i0', beforeSos='i0';
 
-  // topics
-  var TOPICS=[["📚","Учёба","Сессия, выбор направления","#8E6CE0","#fff"],["💔","Отношения","Влюблённость, расставание, друзья","#F07A28"],["🏡","Семья","Родители, взросление","#F2A3C7"],["💼","Работа","Первая работа, увольнение","#D9E36A"],["🧳","Переезд","Новый город, скучаю по дому","#8C1D2F","#fff"],["🧭","Жизненный выбор","Стою на развилке","#BCD4EC"],["☕","Просто поболтать","Истории, рецепты, как было раньше","#F9E27A"],["✨","Другое","Напишешь на следующем шаге","#D9E36A"]];
-  var topic=null, box=document.getElementById('topics');
+  function $(id){return document.getElementById(id);}
+  function go(to,dir){
+    if(to===cur) return;
+    if(to==='sos') beforeSos=cur;
+    if(to==='review') fillReview();
+    var a=$('s-'+cur), b=$('s-'+to);
+    a.hidden=true; b.hidden=false;
+    var d=dir||(ORDER.indexOf(to)>ORDER.indexOf(cur)?'l':'r'); if(to==='sos'||cur==='sos') d='f';
+    b.classList.remove('in-l','in-r','in-f'); void b.offsetWidth; b.classList.add('in-'+d);
+    cur=to; window.scrollTo(0,0);
+    if(to==='sent'){ var c=$('confetti'); c.style.animation='none'; void c.offsetWidth; c.style.animation='pop .7s cubic-bezier(.3,1.5,.5,1) both'; }
+  }
+  document.addEventListener('click',function(e){
+    var b=e.target.closest('[data-go]'); if(b&&!b.disabled){ go(b.dataset.go); return; }
+    if(e.target.closest('[data-sos]')) go('sos');
+  });
+  $('sos-back').onclick=$('sos-back2').onclick=function(){ go(beforeSos,'f'); };
+
+  // ---------- swipe
+  var sx=null, sy=null;
+  document.addEventListener('touchstart',function(e){ var t=e.touches[0]; sx=t.clientX; sy=t.clientY; },{passive:true});
+  document.addEventListener('touchend',function(e){
+    if(sx===null) return; var t=e.changedTouches[0], dx=t.clientX-sx, dy=t.clientY-sy; sx=null;
+    if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.5) return;
+    if(e.target.closest('input,textarea,.slots,.chips')) return;
+    var s=$('s-'+cur);
+    if(dx<0&&s.dataset.swipeNext){ var nb=s.querySelector('#next-'+cur); if(!nb||!nb.disabled) go(s.dataset.swipeNext); }
+    if(dx>0&&s.dataset.swipePrev) go(s.dataset.swipePrev);
+  },{passive:true});
+
+  // ---------- topics
+  var TOPICS=[["📚","Учёба","Сессия, выбор направления","#8E6CE0","#fff"],["💔","Отношения","Влюблённость, расставание","#F07A28"],["🏡","Семья","Родители, взросление","#F2A3C7"],["💼","Работа","Первая работа, увольнение","#D9E36A"],["🧳","Переезд","Новый город, скучаю по дому","#8C1D2F","#fff"],["🧭","Жизненный выбор","Стою на развилке","#BCD4EC"],["☕","Просто поболтать","Истории, рецепты","#F9E27A"],["✨","Другое","Напишешь дальше","#D9C8F7"]];
+  var tbox=$('topics');
   TOPICS.forEach(function(t,i){
-    var b=document.createElement('button'); b.type='button'; b.className='topic'; b.setAttribute('aria-pressed','false');
+    var b=document.createElement('button'); b.type='button'; b.className='tc'; b.setAttribute('aria-pressed','false');
     b.style.background=t[3]; if(t[4]) b.style.color=t[4];
-    b.innerHTML='<span class="e">'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small>';
-    b.addEventListener('click',function(){ [].forEach.call(box.children,function(x){x.setAttribute('aria-pressed','false');}); b.setAttribute('aria-pressed','true'); topic=t[1]; document.getElementById('to2').disabled=false; });
-    box.appendChild(b);
+    b.innerHTML='<span class="e wob" style="animation-delay:-'+(i*0.4)+'s">'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small>';
+    b.onclick=function(){ [].forEach.call(tbox.children,function(x){x.setAttribute('aria-pressed','false');}); b.setAttribute('aria-pressed','true'); S.topic=t[0]+' '+t[1]; validate(); };
+    tbox.appendChild(b);
   });
 
-  // times
-  [].forEach.call(document.querySelectorAll('#times .chip'),function(c){ c.addEventListener('click',function(){ c.setAttribute('aria-pressed', c.getAttribute('aria-pressed')==='true'?'false':'true'); }); });
+  // ---------- days & hours
+  var WD=['вс','пн','вт','ср','чт','пт','сб'], MO=['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  function iso(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+  function human(d){ return WD[d.getDay()]+' '+d.getDate()+' '+MO[d.getMonth()]; }
+  var today=new Date(); today.setHours(0,0,0,0);
+  var dbox=$('days'), DAYS=[];
+  for(var i=0;i<7;i++){
+    var d=new Date(today); d.setDate(today.getDate()+i);
+    var label=i===0?'Сегодня':i===1?'Завтра · '+WD[d.getDay()]+' '+d.getDate():WD[d.getDay()]+' '+d.getDate();
+    DAYS.push({key:iso(d),label:label,human:human(d),today:i===0});
+  }
+  DAYS.forEach(function(x){
+    var c=document.createElement('button'); c.type='button'; c.className='chip'; c.textContent=x.label; c.setAttribute('aria-pressed','false'); c.dataset.key=x.key;
+    c.onclick=function(){ toggle(S.days,x.key); c.setAttribute('aria-pressed',S.days.indexOf(x.key)>-1); renderSlots(); validate(); };
+    dbox.appendChild(c);
+  });
+  var oc=document.createElement('button'); oc.type='button'; oc.className='chip'; oc.id='other-chip'; oc.textContent='📅 Другая дата'; oc.setAttribute('aria-pressed','false');
+  dbox.appendChild(oc);
+  var od=$('other-date'); var min=new Date(today); min.setDate(today.getDate()+7); var max=new Date(today); max.setDate(today.getDate()+60);
+  od.min=iso(min); od.max=iso(max);
+  oc.onclick=function(){
+    var on=oc.getAttribute('aria-pressed')!=='true';
+    oc.setAttribute('aria-pressed',on); $('datebox').hidden=!on;
+    if(on){ try{ od.showPicker&&od.showPicker(); }catch(_){} } else { S.other=''; od.value=''; oc.textContent='📅 Другая дата'; }
+    validate();
+  };
+  od.onchange=function(){ if(od.value){ var p=od.value.split('-'); var d=new Date(+p[0],+p[1]-1,+p[2]); S.other=human(d); oc.textContent='📅 '+S.other; } else { S.other=''; oc.textContent='📅 Другая дата'; } validate(); };
 
-  // submit
+  var sbox=$('slots');
+  function renderSlots(){
+    var onlyToday=S.days.length===1&&S.days[0]===DAYS[0].key&&!S.other, nowH=new Date().getHours();
+    sbox.innerHTML='';
+    for(var h=10;h<=21;h++){ (function(h){
+      var b=document.createElement('button'); b.type='button'; b.className='slot'; b.textContent=h+':00';
+      var key=h+':00', past=onlyToday&&h<=nowH;
+      if(past){ b.disabled=true; var k=S.hours.indexOf(key); if(k>-1) S.hours.splice(k,1); }
+      b.setAttribute('aria-pressed',S.hours.indexOf(key)>-1);
+      b.onclick=function(){ toggle(S.hours,key); b.setAttribute('aria-pressed',S.hours.indexOf(key)>-1); validate(); };
+      sbox.appendChild(b);
+    })(h); }
+  }
+  renderSlots();
+  function toggle(arr,v){ var i=arr.indexOf(v); if(i>-1) arr.splice(i,1); else arr.push(v); }
+  function dayList(){
+    var out=DAYS.filter(function(x){return S.days.indexOf(x.key)>-1;}).map(function(x){return x.today?'сегодня ('+x.human+')':x.human;});
+    if(S.other) out.push(S.other); return out;
+  }
+  function hourList(){ return S.hours.slice().sort(function(a,b){return parseInt(a)-parseInt(b);}); }
+  function timeText(){ var d=dayList(), h=hourList(); if(!d.length||!h.length) return ''; return d.join(', ')+' · '+h.join(' или '); }
+
+  // ---------- details
+  ['name','note'].forEach(function(id){ $(id).addEventListener('input',validate); });
+  $('rules').addEventListener('change',validate);
+
   var CRISIS=['не хочу жить','нет смысла','покончить','суицид','умереть','убить себя','очень плохо','не вижу смысла','самоуб'];
-  var text='';
-  document.getElementById('submit').addEventListener('click',function(){
-    var err=document.getElementById('err'); err.hidden=true;
-    var name=document.getElementById('name').value.trim(), note=document.getElementById('note').value.trim();
-    var times=[].filter.call(document.querySelectorAll('#times .chip'),function(c){return c.getAttribute('aria-pressed')==='true';}).map(function(c){return c.dataset.v;});
-    var p=[]; if(!name)p.push('напиши, как к тебе обращаться'); if(!times.length)p.push('выбери удобное время'); if(!document.getElementById('rules').checked)p.push('подтверди согласие с правилами');
-    if(p.length){ err.textContent='Чтобы продолжить, '+p.join(', ')+'.'; err.hidden=false; return; }
-    var low=(note+' '+name).toLowerCase(); if(CRISIS.some(function(w){return low.indexOf(w)!==-1;})){ go(9); return; }
-    text='Заявка «Бабушка на связи» (мини-приложение)\nИмя: '+name+'\nТема: '+topic+'\nКогда удобно: '+times.join(', ')+(note?'\nО запросе: '+note:'')+'\nС правилами согласен(на).';
-    document.getElementById('text').textContent=text; go(3);
-  });
+  function validate(){
+    S.name=$('name').value.trim(); S.note=$('note').value.trim(); S.rules=$('rules').checked;
+    $('next-topic').disabled=!S.topic;
+    var tt=timeText(); $('summary').textContent=tt?'Выбрано: '+tt:''; $('next-time').disabled=!tt;
+    $('next-details').disabled=!(S.name&&S.rules);
+  }
+  $('next-details').addEventListener('click',function(e){
+    var low=(S.note+' '+S.name).toLowerCase();
+    if(CRISIS.some(function(w){return low.indexOf(w)>-1;})){ e.stopPropagation(); go('sos'); }
+  },true);
 
-  // copy + send
-  function toast(t){ var el=document.getElementById('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(function(){el.hidden=true;},2600); }
-  function copy(){ return send('VKWebAppCopyText',{text:text}).catch(function(){ return navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject(); }); }
-  document.getElementById('copy').addEventListener('click',function(){ copy().then(function(){toast('Текст скопирован');},function(){toast('Выдели текст и скопируй вручную');}); });
-  document.getElementById('send').addEventListener('click',function(){
-    copy().catch(function(){}).then(function(){
-      return send('VKWebAppAllowMessagesFromGroup',{group_id:GROUP_ID}).catch(function(){});
-    }).then(function(){
-      toast('Текст скопирован – вставь его в чат');
-      var a=document.createElement('a'); a.href=CHAT_URL; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
-    });
-  });
+  // ---------- review + send
+  function fillReview(){
+    $('r-topic').textContent=S.topic; $('r-time').textContent=timeText(); $('r-name').textContent=S.name;
+    $('r-note').textContent=S.note; $('r-note-wrap').hidden=!S.note;
+  }
+  function text(){ return 'Заявка «Бабушка на связи» (мини-приложение)\nИмя: '+S.name+'\nТема: '+S.topic+'\nКогда удобно: '+timeText()+(S.note?'\nО запросе: '+S.note:'')+'\nС правилами согласен(на).'; }
+  function toast(t){ var el=$('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(function(){el.hidden=true;},2600); }
+  function copy(){ var t=text(); return send('VKWebAppCopyText',{text:t}).catch(function(){ return navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject(); }); }
+  function openChat(){ var a=document.createElement('a'); a.href=CHAT_URL; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove(); }
+  $('send').onclick=function(){
+    copy().catch(function(){}).then(function(){ return send('VKWebAppAllowMessagesFromGroup',{group_id:GROUP_ID}).catch(function(){}); })
+      .then(function(){ toast('Текст скопирован – вставь его в чат'); openChat(); go('sent'); });
+  };
+  $('copy-again').onclick=function(){ copy().then(function(){ toast('Скопировано'); openChat(); },function(){ toast('Не получилось скопировать'); }); };
+  validate();
 })();
 </script>
 </body>
