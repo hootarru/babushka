@@ -41,7 +41,7 @@ p{margin:0}.muted{color:var(--muted)}
 .dots{display:flex;gap:8px;justify-content:center}.dots i{width:8px;height:8px;border-radius:4px;background:#E3D7D0;transition:width .3s,background .3s}.dots i.on{width:24px;background:var(--ink)}
 .ill{position:relative;height:clamp(240px,36vh,300px);border-radius:32px;flex:none}
 .stk{position:absolute;width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:34px;box-shadow:0 10px 22px -16px var(--shadow)}
-.pix{image-rendering:pixelated;image-rendering:crisp-edges;display:block;max-width:100%}
+.pix{display:block;max-width:none;height:auto}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .note{background:var(--lilac);border-radius:16px;padding:12px 14px;font-size:14px;line-height:1.4}
 .pill{align-self:flex-start;font-size:13px;font-weight:500;padding:5px 12px;border-radius:999px;background:var(--pink2);color:var(--ink-fixed)}
@@ -101,7 +101,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
 <section class="screen" id="s-i0" data-swipe-next="i1">
   <div class="top"><span></span><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
   <div class="ill" style="background:var(--sky)">
-    <img class="pix" src="img/cloud.png" alt="" style="position:absolute;left:50%;top:50%;width:min(56%,190px);transform:translate(-50%,-50%);animation:drift 5s ease-in-out infinite">
+    <img class="pix" src="img/cloud.png" alt="" style="position:absolute;left:50%;top:50%;width:min(48%,166px);transform:translate(-50%,-50%);animation:drift 5s ease-in-out infinite">
     <span class="stk bob" style="left:16px;top:16px;background:#fff;--r:-6deg">📚</span>
     <span class="stk bob" style="right:16px;top:36px;background:var(--pink);--r:7deg;animation-delay:-1s">💔</span>
     <span class="stk bob" style="left:28px;bottom:20px;background:var(--sun);--r:5deg;animation-delay:-2s">🧳</span>
@@ -121,7 +121,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
     <span class="stk bob" style="left:16px;top:22px;background:var(--lilac2);--r:-6deg">☕</span>
     <span class="stk bob" style="left:62px;top:110px;background:var(--sun);--r:6deg;animation-delay:-1.5s">🧶</span>
     <span class="stk bob" style="left:22px;bottom:22px;background:#fff;--r:-4deg;animation-delay:-2.5s">💬</span>
-    <img class="pix" src="img/granny.png" alt="" style="position:absolute;right:18px;top:8px;height:calc(100% + 110px);width:auto;transform-origin:50% 100%;animation:sway 4.5s ease-in-out infinite">
+    <img class="pix" src="img/granny.png" alt="" style="position:absolute;right:18px;top:8px;width:min(40%,158px);transform-origin:50% 100%;animation:sway 4.5s ease-in-out infinite">
   </div>
   <h1 style="max-width:58%">Есть бабушки, которые выслушают</h1>
   <p>Без оценок, нотаций и&nbsp;«а&nbsp;вот в&nbsp;наше время». В&nbsp;18 им&nbsp;тоже было непросто&nbsp;– и&nbsp;они расскажут, как справлялись сами.</p>
@@ -179,9 +179,9 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   <label class="lbl" for="note">О&nbsp;чём хочется поговорить <span class="muted" style="font-weight:400">(по&nbsp;желанию)</span></label>
   <textarea id="note" maxlength="400" placeholder="Например: переехала в Москву, учёба не идёт, хочется поговорить с кем-то спокойным"></textarea>
   <label class="check"><input type="checkbox" id="rules"><span>Мне есть 18&nbsp;лет, я&nbsp;соглашаюсь с&nbsp;правилами (без денег, контактов и&nbsp;встреч) и&nbsp;на&nbsp;обработку персональных данных</span></label>
-  <div class="ill" style="background:var(--orange);height:150px;overflow:hidden">
-    <img class="pix bob" src="img/computer.png" alt="" style="position:absolute;left:12%;bottom:-6px;width:120px;--r:6deg">
-    <img class="pix ringing" src="img/nokia.png" alt="" style="position:absolute;right:12%;top:8px;width:84px;transform-origin:50% 80%">
+  <div class="ill" style="background:var(--orange);height:190px;overflow:hidden">
+    <img class="pix bob" src="img/computer.png" alt="" style="position:absolute;left:6%;bottom:6px;width:min(46%,172px)">
+    <img class="pix ringing" src="img/nokia.png" alt="" style="position:absolute;right:8%;top:10px;width:min(30%,110px);transform-origin:50% 80%">
   </div>
   <div class="foot"><button class="btn" type="button" id="next-details" data-go="review" disabled>Дальше</button></div>
 </section>
@@ -207,7 +207,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
 <section class="screen" id="s-sent" hidden>
   <div class="top"><span></span><button class="sos" type="button" data-sos>🆘 Мне тяжело</button></div>
   <div class="ill" style="background:var(--lime);height:200px">
-    <img class="pix" id="confetti" src="img/confetti.png" alt="" style="position:absolute;left:50%;top:50%;width:120px;transform:translate(-50%,-50%)">
+    <img class="pix" id="confetti" src="img/confetti.png" alt="" style="position:absolute;left:50%;top:50%;width:124px;transform:translate(-50%,-50%)">
     <span class="stk bob" style="left:18px;top:18px;background:#fff;--r:-6deg">👵</span>
     <span class="stk ringing" style="right:20px;bottom:20px;background:var(--sun);--r:6deg">📞</span>
   </div>
