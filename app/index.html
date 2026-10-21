@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Бабушка на связи</title>
+<link rel="icon" href="../favicon.ico" sizes="any">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;900&family=Onest:wght@400;500;700&display=swap">
+<style>
+/* Mini app: one column, step screens (start → topic → time → done), same palette as the site */
+:root{
+  --bg:#FBF6EE; --surface:#FFFFFF; --ink:#3A1D1F; --muted:#7D6662; --line:#EFE5E0;
+  --lilac:#EDE5FB; --violet:#8E6CE0; --orange:#F07A28; --pink:#F2A3C7; --lime:#D9E36A; --sky:#BCD4EC; --sun:#F9E27A; --maroon:#8C1D2F;
+  --ink-fixed:#3A1D1F; --on-dark:#FFFFFF; --danger-bg:#FCE6E0; --danger:#B4311A; --shadow:rgba(46,26,43,.3);
+  --f-d:"Unbounded","Arial Black",system-ui,sans-serif; --f-b:"Onest","Helvetica Neue",Arial,system-ui,sans-serif;
+}
+:root[data-theme="dark"]{--bg:#17111A;--surface:#211A25;--ink:#F4ECF2;--muted:#B7A8B3;--line:#342A38;--lilac:#352A47;--danger-bg:#3D1F1A;--danger:#FF9A85;--shadow:rgba(0,0,0,.6);color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--f-b)}
+body{padding:calc(env(safe-area-inset-top,0px) + 12px) max(16px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 24px) max(16px,env(safe-area-inset-left,0px));min-height:100vh}
+.wrap{max-width:520px;margin:0 auto;display:grid;gap:16px}
+h1,h2{font-family:var(--f-d);font-weight:600;margin:0;line-height:1.02;text-transform:uppercase;text-wrap:balance}
+h1{font-size:clamp(34px,10vw,46px);font-weight:900}
+h1 span{display:block;color:var(--orange)}
+h2{font-size:24px}
+p{margin:0}
+.muted{color:var(--muted)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:26px;padding:20px;display:grid;gap:14px}
+.hero{position:relative;overflow:hidden;text-align:center;padding:28px 18px 24px;justify-items:center}
+.hero .sticker{position:absolute;font-size:30px;width:52px;height:52px;border-radius:16px;display:grid;place-items:center}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;font:700 16px var(--f-b);padding:16px 20px;border-radius:999px;border:0;cursor:pointer;text-decoration:none;color:var(--ink-fixed);background:var(--orange)}
+.btn.ghost{background:var(--surface);color:var(--ink);border:1.5px solid var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn:active{transform:scale(.98)}
+.steps{display:flex;gap:6px}
+.steps i{flex:1;height:5px;border-radius:3px;background:var(--line)}
+.steps i.on{background:var(--orange)}
+.back{background:none;border:0;color:var(--muted);font:500 15px var(--f-b);padding:6px 0;cursor:pointer;justify-self:start}
+.topics{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.topic{position:relative;border:0;border-radius:22px;padding:16px 14px;text-align:left;cursor:pointer;display:grid;gap:6px;min-height:118px;align-content:start;color:var(--ink-fixed);font:inherit;transition:transform .15s,box-shadow .15s}
+.topic .e{font-size:30px;line-height:1}
+.topic b{font:600 14px/1.1 var(--f-d);text-transform:uppercase}
+.topic small{font-size:12.5px;line-height:1.3;opacity:.8}
+.topic[aria-pressed="true"]{box-shadow:0 0 0 3px var(--ink);transform:rotate(-1.5deg) scale(1.02)}
+.topic[aria-pressed="true"]::after{content:"✓";position:absolute;top:10px;right:12px;width:26px;height:26px;border-radius:50%;background:var(--ink-fixed);color:var(--sun);display:grid;place-items:center;font-weight:700;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:10px 15px;font:500 15px var(--f-b);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+label.lbl{font-weight:700;font-size:15px}
+input[type=text],textarea{width:100%;font:16px var(--f-b);color:var(--ink);background:var(--bg);border:1.5px solid var(--line);border-radius:14px;padding:13px 14px}
+textarea{min-height:90px;resize:vertical}
+input:focus,textarea:focus{outline:none;border-color:var(--violet)}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--muted)}
+.check input{width:20px;height:20px;margin-top:1px;accent-color:var(--orange);flex:none}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:14px;padding:14px;font:14px/1.5 var(--f-b);margin:0}
+.done-ic{font-size:56px;line-height:1}
+.crisis{background:var(--danger-bg);border-radius:20px;padding:18px;display:grid;gap:8px}
+.crisis b{color:var(--danger)}
+.phone{font:700 22px var(--f-d);user-select:all}
+.help{justify-self:center;background:none;border:0;color:var(--muted);font:600 14px var(--f-b);text-decoration:underline;cursor:pointer;padding:8px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;font-weight:500;z-index:9}
+.safe{display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:14px;color:var(--muted);text-align:left}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- 0. start -->
+  <section id="s0" class="screen">
+    <div class="card hero">
+      <span class="sticker" style="left:12px;top:14px;background:#F8E1D2;transform:rotate(-8deg)">👵</span>
+      <span class="sticker" style="right:12px;top:14px;background:var(--sun);transform:rotate(7deg)">📞</span>
+      <p class="muted" id="hello" style="margin-top:44px">Привет!</p>
+      <h1>Бабушка<span>на&nbsp;связи</span></h1>
+      <p>Поговори с&nbsp;тем, кто выслушает без&nbsp;оценок. Ей&nbsp;тоже было&nbsp;18.</p>
+      <div class="safe">
+        <span>🎧</span><span>Только аудио, 15–40 минут</span>
+        <span>🔒</span><span>Номера телефонов никто не&nbsp;видит</span>
+        <span>🧑‍💼</span><span>Куратор подберёт бабушку под&nbsp;твою тему</span>
+      </div>
+    </div>
+    <div style="display:grid;gap:10px;margin-top:16px">
+      <button class="btn" type="button" data-go="1">Оставить заявку</button>
+      <a class="btn ghost" href="https://babushka.online" target="_blank" rel="noopener">Подробнее о&nbsp;проекте</a>
+    </div>
+  </section>
+
+  <!-- 1. topic -->
+  <section id="s1" class="screen" hidden>
+    <div style="display:grid;gap:14px">
+      <div class="steps"><i class="on"></i><i></i><i></i></div>
+      <button class="back" type="button" data-go="0">← Назад</button>
+      <h2>О&nbsp;чём хочется поговорить?</h2>
+      <div class="topics" id="topics"></div>
+      <button class="btn" type="button" id="to2" data-go="2" disabled>Дальше</button>
+    </div>
+  </section>
+
+  <!-- 2. time + details -->
+  <section id="s2" class="screen" hidden>
+    <div style="display:grid;gap:14px">
+      <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+      <button class="back" type="button" data-go="1">← Назад</button>
+      <h2>Почти готово</h2>
+      <div class="card">
+        <label class="lbl" for="name">Как к&nbsp;тебе обращаться</label>
+        <input type="text" id="name" maxlength="40" placeholder="Например, Аня" autocomplete="given-name">
+        <span class="lbl">Когда удобно</span>
+        <div class="chips" id="times">
+          <button class="chip" type="button" aria-pressed="false" data-v="будни днём">Будни днём</button>
+          <button class="chip" type="button" aria-pressed="false" data-v="будни вечером">Будни вечером</button>
+          <button class="chip" type="button" aria-pressed="false" data-v="выходные">Выходные</button>
+        </div>
+        <label class="lbl" for="note">Пара слов о&nbsp;запросе <span class="muted" style="font-weight:400">(по&nbsp;желанию)</span></label>
+        <textarea id="note" maxlength="400" placeholder="Например: переехала в Москву, хочется поговорить с кем-то спокойным"></textarea>
+        <label class="check"><input type="checkbox" id="rules"><span>Мне есть 18&nbsp;лет, я&nbsp;соглашаюсь с&nbsp;правилами (без денег, контактов и&nbsp;встреч) и&nbsp;на&nbsp;обработку персональных данных.</span></label>
+      </div>
+      <p class="muted" id="err" hidden style="color:var(--danger)"></p>
+      <button class="btn" type="button" id="submit">Собрать заявку</button>
+    </div>
+  </section>
+
+  <!-- 3. done -->
+  <section id="s3" class="screen" hidden>
+    <div style="display:grid;gap:14px">
+      <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+      <div class="card" style="text-align:center;justify-items:center">
+        <span class="done-ic">🎉</span>
+        <h2>Заявка готова</h2>
+        <p class="muted" id="done-msg">Отправь её нам в&nbsp;сообщения сообщества – куратор подберёт бабушку и&nbsp;напишет тебе.</p>
+      </div>
+      <pre id="text"></pre>
+      <button class="btn" type="button" id="send">Отправить в&nbsp;сообщения ↗</button>
+      <button class="btn ghost" type="button" id="copy">Скопировать текст</button>
+      <button class="back" type="button" data-go="2" style="justify-self:center">Изменить заявку</button>
+    </div>
+  </section>
+
+  <!-- crisis -->
+  <section id="s9" class="screen" hidden>
+    <div style="display:grid;gap:14px">
+      <button class="back" type="button" data-go="0">← На&nbsp;главную</button>
+      <div class="crisis">
+        <b>Похоже, тебе сейчас очень тяжело.</b>
+        <p>Мы не&nbsp;кризисная линия и&nbsp;не&nbsp;хотим, чтобы ты оставался с&nbsp;этим один. Позвони туда, где помогают профессионалы, – бесплатно и&nbsp;круглосуточно:</p>
+        <p><span class="phone">051</span> – психологическая помощь в&nbsp;Москве (с&nbsp;мобильного: <span class="phone" style="font-size:18px">+7&nbsp;495&nbsp;051</span>)</p>
+        <p><span class="phone">112</span> – экстренная помощь</p>
+      </div>
+    </div>
+  </section>
+
+  <button class="help" type="button" id="help">🆘 Мне тяжело</button>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@vkontakte/vk-bridge@2.15.0/dist/browser.min.js"></script>
+<script>
+(function(){
+  var GROUP_ID=242075919, CHAT_URL='https://vk.com/im?sel=-'+GROUP_ID;
+  var bridge=window.vkBridge||null;
+  function send(method,params){ if(!bridge) return Promise.reject(new Error('no bridge')); return bridge.send(method,params||{}); }
+
+  // init + theme + name
+  send('VKWebAppInit').catch(function(){});
+  if(bridge){ bridge.subscribe(function(e){ var d=e.detail||{}; if(d.type==='VKWebAppUpdateConfig'){ var dark=/dark/.test(d.data.appearance||d.data.scheme||''); document.documentElement.dataset.theme=dark?'dark':'light'; } }); }
+  send('VKWebAppGetUserInfo').then(function(u){ if(u&&u.first_name){ document.getElementById('hello').textContent='Привет, '+u.first_name+'!'; var n=document.getElementById('name'); if(!n.value) n.value=u.first_name; } }).catch(function(){});
+
+  // screens
+  function go(n){ [].forEach.call(document.querySelectorAll('.screen'),function(s){ s.hidden=s.id!=='s'+n; }); window.scrollTo(0,0); }
+  document.addEventListener('click',function(e){ var b=e.target.closest('[data-go]'); if(b&&!b.disabled) go(b.dataset.go); });
+  document.getElementById('help').addEventListener('click',function(){ go(9); });
+
+  // topics
+  var TOPICS=[["📚","Учёба","Сессия, выбор направления","#8E6CE0","#fff"],["💔","Отношения","Влюблённость, расставание, друзья","#F07A28"],["🏡","Семья","Родители, взросление","#F2A3C7"],["💼","Работа","Первая работа, увольнение","#D9E36A"],["🧳","Переезд","Новый город, скучаю по дому","#8C1D2F","#fff"],["🧭","Жизненный выбор","Стою на развилке","#BCD4EC"],["☕","Просто поболтать","Истории, рецепты, как было раньше","#F9E27A"],["✨","Другое","Напишешь на следующем шаге","#D9E36A"]];
+  var topic=null, box=document.getElementById('topics');
+  TOPICS.forEach(function(t,i){
+    var b=document.createElement('button'); b.type='button'; b.className='topic'; b.setAttribute('aria-pressed','false');
+    b.style.background=t[3]; if(t[4]) b.style.color=t[4];
+    b.innerHTML='<span class="e">'+t[0]+'</span><b>'+t[1]+'</b><small>'+t[2]+'</small>';
+    b.addEventListener('click',function(){ [].forEach.call(box.children,function(x){x.setAttribute('aria-pressed','false');}); b.setAttribute('aria-pressed','true'); topic=t[1]; document.getElementById('to2').disabled=false; });
+    box.appendChild(b);
+  });
+
+  // times
+  [].forEach.call(document.querySelectorAll('#times .chip'),function(c){ c.addEventListener('click',function(){ c.setAttribute('aria-pressed', c.getAttribute('aria-pressed')==='true'?'false':'true'); }); });
+
+  // submit
+  var CRISIS=['не хочу жить','нет смысла','покончить','суицид','умереть','убить себя','очень плохо','не вижу смысла','самоуб'];
+  var text='';
+  document.getElementById('submit').addEventListener('click',function(){
+    var err=document.getElementById('err'); err.hidden=true;
+    var name=document.getElementById('name').value.trim(), note=document.getElementById('note').value.trim();
+    var times=[].filter.call(document.querySelectorAll('#times .chip'),function(c){return c.getAttribute('aria-pressed')==='true';}).map(function(c){return c.dataset.v;});
+    var p=[]; if(!name)p.push('напиши, как к тебе обращаться'); if(!times.length)p.push('выбери удобное время'); if(!document.getElementById('rules').checked)p.push('подтверди согласие с правилами');
+    if(p.length){ err.textContent='Чтобы продолжить, '+p.join(', ')+'.'; err.hidden=false; return; }
+    var low=(note+' '+name).toLowerCase(); if(CRISIS.some(function(w){return low.indexOf(w)!==-1;})){ go(9); return; }
+    text='Заявка «Бабушка на связи» (мини-приложение)\nИмя: '+name+'\nТема: '+topic+'\nКогда удобно: '+times.join(', ')+(note?'\nО запросе: '+note:'')+'\nС правилами согласен(на).';
+    document.getElementById('text').textContent=text; go(3);
+  });
+
+  // copy + send
+  function toast(t){ var el=document.getElementById('toast'); el.textContent=t; el.hidden=false; clearTimeout(toast.t); toast.t=setTimeout(function(){el.hidden=true;},2600); }
+  function copy(){ return send('VKWebAppCopyText',{text:text}).catch(function(){ return navigator.clipboard?navigator.clipboard.writeText(text):Promise.reject(); }); }
+  document.getElementById('copy').addEventListener('click',function(){ copy().then(function(){toast('Текст скопирован');},function(){toast('Выдели текст и скопируй вручную');}); });
+  document.getElementById('send').addEventListener('click',function(){
+    copy().catch(function(){}).then(function(){
+      return send('VKWebAppAllowMessagesFromGroup',{group_id:GROUP_ID}).catch(function(){});
+    }).then(function(){
+      toast('Текст скопирован – вставь его в чат');
+      var a=document.createElement('a'); a.href=CHAT_URL; a.target='_blank'; a.rel='noopener'; document.body.appendChild(a); a.click(); a.remove();
+    });
+  });
+})();
+</script>
+</body>
+</html>
