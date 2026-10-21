@@ -15,11 +15,11 @@
         m[i].l=1*new Date();
         for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113719232', 'ym');
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113723393', 'ym');
 
-    ym(113719232, 'init', {ssr:true, webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params:{source:'vk_mini_app'}});
+    ym(113723393, 'init', {ssr:true, webvisor:true, clickmap:true, referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true, params:{source:'vk_mini_app'}});
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/113719232" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<noscript><div><img src="https://mc.yandex.ru/watch/113723393" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
 <style>
 /* Mini app: full-height step screens (intro ×3 → topic → time → details → review → sent), palette of the site */
@@ -305,7 +305,7 @@ input:focus,textarea:focus{outline:none;border-color:var(--violet)}
   if(bridge){ bridge.subscribe(function(e){ var d=e.detail||{}; if(d.type==='VKWebAppUpdateConfig'){ var s=(d.data&&(d.data.appearance||d.data.scheme))||''; document.documentElement.dataset.theme=/dark/.test(s)?'dark':'light'; } }); }
   send('VKWebAppGetUserInfo').then(function(u){ if(u&&u.first_name){ var n=document.getElementById('name'); if(!n.value){ n.value=u.first_name; validate(); } } }).catch(function(){});
 
-  var sent={}; function goal(n,once){ if(once&&sent[n]) return; sent[n]=1; try{ if(typeof window.ym==='function') window.ym(113719232,'reachGoal',n); }catch(_){} }
+  var sent={}; function goal(n,once){ if(once&&sent[n]) return; sent[n]=1; try{ if(typeof window.ym==='function') window.ym(113723393,'reachGoal',n); }catch(_){} }
   goal('app_open',true);
   // ---------- state
   var S={topic:null, days:[], hours:[], other:'', name:'', note:'', rules:false};
