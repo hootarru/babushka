@@ -9,18 +9,20 @@
 <meta name="theme-color" content="#FBF6EE">
 <link rel="canonical" href="https://babushka.online/">
 <meta name="description" content="Бабушка на связи – тёплый аудиоразговор с бабушкой без оценок и осуждения. Для молодых людей 18–30 лет. Заявка через ВКонтакте.">
-<!-- Yandex.Metrika counter -->
+<!-- Yandex.Metrika counter: загружается только после согласия в плашке cookies -->
 <script type="text/javascript">
+  window.bnsLoadYM=function(){
+    if(window.bnsYMLoaded)return;window.bnsYMLoaded=true;
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
         m[i].l=1*new Date();
         for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
         k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
     })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113719232', 'ym');
-
     ym(113719232, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+  };
+  try{if(localStorage.getItem('bns-cookie')==='yes')window.bnsLoadYM();}catch(_){}
 </script>
-<noscript><div><img src="https://mc.yandex.ru/watch/113719232" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 <!-- /Yandex.Metrika counter -->
 <title>Бабушка на связи</title>
 <meta property="og:type" content="website">
@@ -398,8 +400,11 @@ footer p{max-width:52ch}
 
 
 /* cookie notice */
-.cookie{position:fixed;z-index:40;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:min(360px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);border-radius:var(--r-m);padding:14px 16px;display:flex;gap:12px;align-items:center;box-shadow:0 18px 40px -20px var(--shadow);font-size:14px;line-height:1.4}
-.cookie button{flex:none;font:700 14px var(--f-body);padding:9px 14px;border-radius:var(--r-s);border:0;background:var(--peach);color:var(--on-peach);cursor:pointer}
+.cookie{position:fixed;z-index:40;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));max-width:min(400px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1.5px solid var(--ink);border-radius:var(--r-m);padding:16px 18px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 40px -20px var(--shadow);font-size:14px;line-height:1.45}
+.cookie a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.cookie .ck-btns{display:flex;gap:8px;flex-wrap:wrap}
+.cookie button{flex:1 1 auto;font:700 14px var(--f-body);padding:10px 14px;border-radius:var(--r-s);border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer}
+.cookie button.ck-yes{background:var(--peach);color:var(--on-peach);border-color:var(--peach)}
 @media (max-width:520px){.cookie{bottom:calc(70px + env(safe-area-inset-bottom,0px))}}
 
 /* help button */
@@ -805,7 +810,7 @@ footer p{max-width:52ch}
   </footer>
 </div>
 
-<div class="cookie" id="cookie" hidden role="region" aria-label="Уведомление о cookies"><span>Мы используем cookies и&nbsp;Яндекс Метрику, чтобы понимать, как улучшить сайт.</span><button type="button" id="cookie-ok">Понятно</button></div>
+<div class="cookie" id="cookie" hidden role="region" aria-label="Согласие на cookies"><span>Мы используем cookies и&nbsp;Яндекс Метрику, чтобы понимать, как улучшить сайт. Данные обезличены и&nbsp;не&nbsp;передаются третьим лицам. Подробнее&nbsp;– в&nbsp;<a href="https://docs.google.com/document/d/1hi-oBBAyVeWE3rrzJjJs1VBeh_QDbilEvKr3sEDtfWA/edit?usp=sharing" target="_blank" rel="noopener">Политике обработки персональных данных</a>.</span><div class="ck-btns"><button type="button" class="ck-yes" id="cookie-yes">Разрешить</button><button type="button" id="cookie-no">Отказать</button></div></div>
 <button class="help-btn" type="button" id="help-btn" aria-expanded="false" aria-controls="help-panel">🆘 Мне тяжело</button>
 <div class="help-panel" id="help-panel" hidden role="dialog" aria-label="Экстренная помощь">
   <b>Мы рядом, но мы не кризисная линия</b>
@@ -884,11 +889,13 @@ footer p{max-width:52ch}
     (function step(){stage.dataset.phase=PH[pi][0];setTimeout(function(){pi=(pi+1)%PH.length;step();},PH[pi][1]);})();}
 
 
-  // ===== cookie notice
-  var ck=document.getElementById('cookie'),seen=false;
-  try{seen=localStorage.getItem('bns-cookie')==='1';}catch(_){}
-  if(!seen)ck.hidden=false;
-  document.getElementById('cookie-ok').addEventListener('click',function(){ck.hidden=true;try{localStorage.setItem('bns-cookie','1');}catch(_){}});
+  // ===== cookie consent: «Разрешить» включает Метрику, «Отказать» – нет
+  var ck=document.getElementById('cookie'),choice=null;
+  try{choice=localStorage.getItem('bns-cookie');}catch(_){}
+  if(choice!=='yes'&&choice!=='no')ck.hidden=false;
+  function ckSet(v){ck.hidden=true;try{localStorage.setItem('bns-cookie',v);}catch(_){}if(v==='yes'&&window.bnsLoadYM)window.bnsLoadYM();}
+  document.getElementById('cookie-yes').addEventListener('click',function(){ckSet('yes');});
+  document.getElementById('cookie-no').addEventListener('click',function(){ckSet('no');});
   // ===== Metrika goals
   var MID=113719232,sent={};
   function goal(name,once){if(once&&sent[name])return;sent[name]=1;try{if(typeof window.ym==='function')window.ym(MID,'reachGoal',name);}catch(_){}}
